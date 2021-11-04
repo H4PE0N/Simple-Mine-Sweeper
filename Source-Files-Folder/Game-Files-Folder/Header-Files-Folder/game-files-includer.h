@@ -4,6 +4,8 @@
 
 #include "../../Mine-Sweeper-Engine/Header-Files-Folder/engine-files-includer.h"
 
+#include <stdio.h>
+
 #include "mine-sweeper-program.h"
 
 #endif

@@ -10,6 +10,12 @@ typedef struct Square
   int adjacent;
 } Square;
 
+typedef struct Point
+{
+  int height;
+  int width;
+} Point;
+
 typedef Square** Field;
 
 #endif
