@@ -166,12 +166,63 @@ bool generate_mine_field(Field mineField, const Bounds bounds, const int mines)
 
 bool activate_field_mines(Field mineField, const Bounds bounds, const int mines)
 {
-  mineField[4][4].mine = true;
+  const int total = (bounds.height * bounds.width);
 
-  mineField[5][5].mine = true;
+	if(mines >= total) return false;
+
+
+	Point* points = every_field_point(bounds.height, bounds.width);
+
+
+	for(int index = 0; index < mines; index = index + 1)
+	{
+		const int random = rand() % (total - index);
+
+		const Point point = points[random];
+
+		mineField[point.height][point.width].mine = true;
+
+		if(!delete_array_point(points, (total - index), random))
+    {
+
+    }
+	}
+
+	free(points);
 
   return true;
 }
+
+bool delete_array_point(Point* points, const int amount, const int start)
+{
+  if(start < 0 || start >= amount) return false;
+
+	for(int index = start; index < (amount - 1); index = index + 1)
+	{
+		points[index] = points[index + 1];
+	}
+
+  return true;
+}
+
+Point* every_field_point(const int height, const int width)
+{
+	const int total = (height * width);
+
+	Point* points = malloc(sizeof(Point) * total);
+
+	for(int hIndex = 0; hIndex < height; hIndex = hIndex + 1)
+	{
+		for(int wIndex = 0; wIndex < width; wIndex = wIndex + 1)
+		{
+			const int index = (hIndex * width) + wIndex;
+
+			points[index] = (Point) {hIndex, wIndex};
+		}
+	}
+	return points;
+}
+
 
 bool mark_adjacent_mines(Field mineField, const Bounds bounds)
 {

@@ -28,4 +28,8 @@ void unlock_field_mines(Field, const Bounds);
 
 void flag_field_mines(Field, const Bounds);
 
+bool delete_array_point(Point*, const int, const int);
+
+Point* every_field_point(const int, const int);
+
 #endif

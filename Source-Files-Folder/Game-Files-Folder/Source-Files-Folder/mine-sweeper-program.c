@@ -3,11 +3,13 @@
 
 int main(int argAmount, char* arguments[])
 {
+  srand(time(NULL));
+
   const Bounds sBounds = {800, 800};
   const char title[] = "Test Title\n";
 
   const Bounds fBounds = {10, 10};
-  const int mines = 20;
+  const int mines = 10;
 
   Field mineField = create_field_matrix(fBounds.height, fBounds.width);
 
@@ -50,7 +52,12 @@ int main(int argAmount, char* arguments[])
       printf("You have lost the game!\n");
     }
 
-    getchar();
+    Event event;
+
+    while(event.type != SDL_QUIT)
+    {
+      SDL_PollEvent(&event);
+    }
   }
   else
   {
