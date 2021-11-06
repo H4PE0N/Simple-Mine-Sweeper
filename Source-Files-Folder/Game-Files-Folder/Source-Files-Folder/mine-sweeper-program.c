@@ -38,6 +38,17 @@ int main(int argAmount, char* arguments[])
     printf("You have lost the game!\n");
   }
 
+  if(!render_mine_field(screen.renderer, sBounds, mineField, fBounds))
+  {
+    printf("Could not render_mine_field!\n");
+
+    return false;
+  }
+
+  SDL_UpdateWindowSurface(screen.window);
+
+  getchar();
+
   free_mine_field(mineField, fBounds.height);
   free_display_screen(screen);
 
@@ -46,8 +57,15 @@ int main(int argAmount, char* arguments[])
 
 bool mine_sweeper_game(Screen screen, const Bounds sBounds, Field mineField, const Bounds fBounds)
 {
-  while(true)
+  while(!mine_field_cleared(mineField, fBounds))
   {
+    if(mine_field_exposed(mineField, fBounds))
+    {
+      printf("mine_field_exposed!\n");
+
+      return false;
+    }
+
     if(!render_mine_field(screen.renderer, sBounds, mineField, fBounds))
     {
       printf("Could not render_mine_field!\n");
@@ -67,8 +85,6 @@ bool mine_sweeper_game(Screen screen, const Bounds sBounds, Field mineField, con
     }
     else if(inputEvent == INPUT_UNLOCK)
     {
-      printf("Unlocking: (%d %d)\n", point.height, point.width);
-
       if(!unlock_field_square(mineField, fBounds, point))
       {
         printf("Could not unlock_field_square!\n");
@@ -76,7 +92,10 @@ bool mine_sweeper_game(Screen screen, const Bounds sBounds, Field mineField, con
     }
     else if(inputEvent == INPUT_FLAG)
     {
-      continue;
+      if(!flag_field_square(mineField, fBounds, point))
+      {
+        printf("Could not flag_field_square!\n");
+      }
     }
   }
   return true;

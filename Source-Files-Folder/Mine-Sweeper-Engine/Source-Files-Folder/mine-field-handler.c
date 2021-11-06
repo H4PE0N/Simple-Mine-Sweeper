@@ -12,8 +12,8 @@ bool mine_field_cleared(Field mineField, const Bounds bounds)
       // If an empty square is not visable, the minefield is not cleared
       if(!square.mine && !square.visable) return false;
 
-      // If a mine is visable, the minefield is not cleared
-      if(square.mine && square.visable) return false;
+      // // If a mine is visable, the minefield is not cleared
+      // if(square.mine && square.visable) return false;
     }
   }
   return true;
@@ -31,6 +31,20 @@ bool mine_field_exposed(Field mineField, const Bounds bounds)
     }
   }
   return false;
+}
+
+bool flag_field_square(Field mineField, const Bounds bounds, const Point point)
+{
+  if(!point_inside_bounds(point, bounds)) return false;
+
+  const Square square = mineField[point.height][point.width];
+
+  if(square.visable) return false;
+
+  // This inverts the value (flips the value on and off)
+  mineField[point.height][point.width].flagged = !square.flagged;
+
+  return true;
 }
 
 bool unlock_field_square(Field mineField, const Bounds bounds, const Point point)

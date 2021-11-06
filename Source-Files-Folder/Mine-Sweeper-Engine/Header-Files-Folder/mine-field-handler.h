@@ -18,4 +18,10 @@ void free_mine_field(Square**, const int);
 
 bool unlock_field_square(Field, const Bounds, const Point);
 
+bool flag_field_square(Field, const Bounds, const Point);
+
+bool mine_field_cleared(Field, const Bounds);
+
+bool mine_field_exposed(Field, const Bounds);
+
 #endif
