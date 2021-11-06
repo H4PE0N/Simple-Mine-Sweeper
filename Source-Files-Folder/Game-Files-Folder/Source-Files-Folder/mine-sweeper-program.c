@@ -29,51 +29,76 @@ int main(int argAmount, char* arguments[])
     return false;
   }
 
-  if(mine_sweeper_game(screen, sBounds, mineField, fBounds))
+  bool result = false;
+
+  if(mine_sweeper_game(&result, screen, sBounds, mineField, fBounds))
   {
-    printf("You have won the game!\n");
-  }
-  else
-  {
-    printf("You have lost the game!\n");
-  }
-
-  if(!render_mine_field(screen.renderer, sBounds, mineField, fBounds))
-  {
-    printf("Could not render_mine_field!\n");
-
-    return false;
-  }
-
-  SDL_UpdateWindowSurface(screen.window);
-
-  getchar();
-
-  free_mine_field(mineField, fBounds.height);
-  free_display_screen(screen);
-
-  return false;
-}
-
-bool mine_sweeper_game(Screen screen, const Bounds sBounds, Field mineField, const Bounds fBounds)
-{
-  while(!mine_field_cleared(mineField, fBounds))
-  {
-    if(mine_field_exposed(mineField, fBounds))
-    {
-      printf("mine_field_exposed!\n");
-
-      return false;
-    }
-
     if(!render_mine_field(screen.renderer, sBounds, mineField, fBounds))
     {
       printf("Could not render_mine_field!\n");
 
       return false;
     }
-
     SDL_UpdateWindowSurface(screen.window);
+
+    if(result)
+    {
+      printf("You have won the game!\n");
+    }
+    else
+    {
+      printf("You have lost the game!\n");
+    }
+
+    getchar();
+  }
+  else
+  {
+    printf("The game was quitted!\n");
+  }
+
+  free_mine_field(mineField, fBounds.height);
+
+  free_display_screen(screen);
+
+  return false;
+}
+
+bool game_still_running(bool* result, Field mineField, const Bounds fBounds)
+{
+  if(mine_field_cleared(mineField, fBounds))
+  {
+    *result = true;
+
+    flag_field_mines(mineField, fBounds);
+
+    return false;
+  }
+
+  else if(mine_field_exposed(mineField, fBounds))
+  {
+    *result = false;
+
+    unlock_field_mines(mineField, fBounds);
+
+    return false;
+  }
+
+  return true;
+}
+
+bool mine_sweeper_game(bool* result, Screen screen, const Bounds sBounds, Field mineField, const Bounds fBounds)
+{
+  while(game_still_running(result, mineField, fBounds))
+  {
+    if(!render_mine_field(screen.renderer, sBounds, mineField, fBounds))
+    {
+      printf("Could not render_mine_field!\n");
+
+      return false;
+    }
+    SDL_UpdateWindowSurface(screen.window);
+
 
     Point point = {-1, -1};
 
@@ -81,6 +106,8 @@ bool mine_sweeper_game(Screen screen, const Bounds sBounds, Field mineField, con
 
     if(inputEvent == INPUT_QUIT)
     {
+      printf("Exiting the window manually!\n");
+
       return false;
     }
     else if(inputEvent == INPUT_UNLOCK)
@@ -98,5 +125,7 @@ bool mine_sweeper_game(Screen screen, const Bounds sBounds, Field mineField, con
       }
     }
   }
+  printf("The game was played normaly!\n");
+
   return true;
 }

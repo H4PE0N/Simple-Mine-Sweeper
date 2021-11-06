@@ -24,4 +24,8 @@ bool mine_field_cleared(Field, const Bounds);
 
 bool mine_field_exposed(Field, const Bounds);
 
+void unlock_field_mines(Field, const Bounds);
+
+void flag_field_mines(Field, const Bounds);
+
 #endif

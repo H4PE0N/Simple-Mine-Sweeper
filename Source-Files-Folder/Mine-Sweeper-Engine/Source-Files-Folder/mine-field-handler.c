@@ -19,6 +19,50 @@ bool mine_field_cleared(Field mineField, const Bounds bounds)
   return true;
 }
 
+void flag_field_mines(Field mineField, const Bounds bounds)
+{
+  for(int hIndex = 0; hIndex < bounds.height; hIndex += 1)
+  {
+    for(int wIndex = 0; wIndex < bounds.width; wIndex += 1)
+    {
+      // Point point = {hIndex, wIndex};
+
+      Square square = mineField[hIndex][wIndex];
+
+      if(!square.mine) continue;
+
+      // if(!unlock_field_square(mineField, bounds, point))
+      // {
+      //
+      // }
+
+      mineField[hIndex][wIndex].flagged = true;
+    }
+  }
+}
+
+void unlock_field_mines(Field mineField, const Bounds bounds)
+{
+  for(int hIndex = 0; hIndex < bounds.height; hIndex += 1)
+  {
+    for(int wIndex = 0; wIndex < bounds.width; wIndex += 1)
+    {
+      // Point point = {hIndex, wIndex};
+
+      Square square = mineField[hIndex][wIndex];
+
+      if(!square.mine) continue;
+
+      // if(!unlock_field_square(mineField, bounds, point))
+      // {
+      //
+      // }
+
+      mineField[hIndex][wIndex].visable = true;
+    }
+  }
+}
+
 bool mine_field_exposed(Field mineField, const Bounds bounds)
 {
   for(int hIndex = 0; hIndex < bounds.height; hIndex += 1)

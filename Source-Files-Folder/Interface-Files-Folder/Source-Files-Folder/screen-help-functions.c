@@ -225,19 +225,21 @@ char* adjacentFiles[] = {"ONE_SYMBOL.png", "TWO_SYMBOL.png", "THREE_SYMBOL.png",
 
 bool extract_symbol_file(char* filename, const Square square)
 {
-  if(!square.visable && square.flagged)
+	memset(filename, 0, 200);
+
+	if(square.visable && square.mine)
   {
-    sprintf(filename, "%s/%s", SCREEN_IMAGE_FOLDER, FLAGGED_SYMBOL_FILE);
+    sprintf(filename, "%s/%s", SCREEN_IMAGE_FOLDER, MINE_SYMBOL_FILE);
   }
-  else if(square.visable && square.adjacent != 0)
+	else if(square.visable && square.adjacent != 0)
   {
     char* adjacentFile = adjacentFiles[square.adjacent - 1];
 
     sprintf(filename, "%s/%s", SCREEN_IMAGE_FOLDER, adjacentFile);
   }
-  else if(square.visable && square.mine)
+  else if(!square.visable && square.flagged)
   {
-    sprintf(filename, "%s/%s", SCREEN_IMAGE_FOLDER, MINE_SYMBOL_FILE);
+    sprintf(filename, "%s/%s", SCREEN_IMAGE_FOLDER, FLAGGED_SYMBOL_FILE);
   }
   return true;
 }
@@ -258,15 +260,17 @@ bool extract_square_image(Surface** image, const Square square)
 
 bool extract_square_file(char* filename, const Square square)
 {
-  if(square.visable && !square.mine)
-  {
-    sprintf(filename, "%s/%s", SCREEN_IMAGE_FOLDER, VISABLE_SQUARE_FILE);
-  }
-  else if(square.visable && square.mine)
+	memset(filename, 0, 200);
+
+	if(square.visable && square.mine)
   {
     sprintf(filename, "%s/%s", SCREEN_IMAGE_FOLDER, EXPLODE_SQUARE_FILE);
   }
-  else
+  else if(square.visable && !square.mine)
+  {
+    sprintf(filename, "%s/%s", SCREEN_IMAGE_FOLDER, VISABLE_SQUARE_FILE);
+  }
+  else if(!square.visable)
   {
     sprintf(filename, "%s/%s", SCREEN_IMAGE_FOLDER, DEFAULT_SQUARE_FILE);
   }
