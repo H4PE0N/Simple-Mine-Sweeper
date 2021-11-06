@@ -3,31 +3,33 @@
 
 int main(int argAmount, char* arguments[])
 {
-  const int height = 10, width = 10, mines = 20;
+  const Bounds sBounds = {800, 800};
+  const char title[] = "Test Title\n";
 
-  Field mineField = create_field_matrix(height, width);
+  const Bounds fBounds = {10, 10};
+  const int mines = 20;
 
-  if(!generate_mine_field(mineField, height, width, mines))
+  Field mineField = create_field_matrix(fBounds.height, fBounds.width);
+
+  if(!generate_mine_field(mineField, fBounds, mines))
   {
     printf("Could not generate field!\n");
 
-    free_mine_field(mineField, height);
+    free_mine_field(mineField, fBounds.height);
 
     return false;
   }
 
-  Window* window = NULL;
-  Renderer* renderer = NULL;
-  Surface* surface = NULL;
+  Screen screen;
 
-  if(!setup_display_screen(&window, &renderer, &surface, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_TITLE))
+  if(!setup_display_screen(&screen, sBounds, title))
   {
     printf("Could not setup_display_screen!\n");
 
     return false;
   }
 
-  if(mine_sweeper_game(mineField, height, width, mines))
+  if(mine_sweeper_game(&screen, sBounds, mineField, fBounds))
   {
     printf("You have won the game!\n");
   }
@@ -36,46 +38,29 @@ int main(int argAmount, char* arguments[])
     printf("You have lost the game!\n");
   }
 
-  free_mine_field(mineField, height);
-  free_display_screen(window, renderer, surface);
+  free_mine_field(mineField, fBounds.height);
+  free_display_screen(screen);
 
   return false;
 }
 
-bool mine_sweeper_game(Field mineField, const int height, const int width, const int mines)
+bool mine_sweeper_game(Screen* screen, const Bounds sBounds, Field mineField, const Bounds fBounds)
 {
-  Point point = {2, 2};
-
-  if(!unlock_field_square(mineField, height, width, point))
+  if(!unlock_field_square(mineField, fBounds, (Point) {2, 2}))
   {
     printf("Could not unlock_field_square!\n");
   }
 
-  for(int hIndex = 0; hIndex < height; hIndex += 1)
+  if(!render_mine_field(screen->renderer, sBounds, mineField, fBounds))
   {
-    for(int wIndex = 0; wIndex < width; wIndex += 1)
-    {
-      Square square = mineField[hIndex][wIndex];
+    printf("Could not render_mine_field!\n");
 
-      if(square.flagged)
-      {
-        printf("F ");
-      }
-      else if(square.visable && !square.mine)
-      {
-        printf("%d ", square.adjacent);
-      }
-      else if(square.visable && square.mine)
-      {
-        printf("M ");
-      }
-      else
-      {
-        printf(". ");
-      }
-    }
-    printf("\n");
+    return false;
   }
+
+  SDL_UpdateWindowSurface(screen->window);
+
+  SDL_Delay(10000);
 
   return true;
 }

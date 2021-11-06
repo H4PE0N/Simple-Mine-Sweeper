@@ -16,6 +16,12 @@ typedef struct Point
   int width;
 } Point;
 
+typedef struct Bounds
+{
+  int height;
+  int width;
+} Bounds;
+
 typedef Square** Field;
 
 #endif

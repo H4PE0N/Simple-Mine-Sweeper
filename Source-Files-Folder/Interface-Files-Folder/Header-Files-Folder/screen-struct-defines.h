@@ -16,4 +16,11 @@ typedef SDL_Color Color;
 
 typedef SDL_Event Event;
 
+typedef struct Screen
+{
+  Window* window;
+  Surface* surface;
+  Renderer* renderer;
+} Screen;
+
 #endif

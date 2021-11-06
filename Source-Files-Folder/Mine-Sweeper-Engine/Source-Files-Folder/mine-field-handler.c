@@ -1,11 +1,11 @@
 
 #include "../Header-Files-Folder/engine-files-includer.h"
 
-bool mine_field_cleared(Field mineField, const int height, const int width)
+bool mine_field_cleared(Field mineField, const Bounds bounds)
 {
-  for(int hIndex = 0; hIndex < height; hIndex += 1)
+  for(int hIndex = 0; hIndex < bounds.height; hIndex += 1)
   {
-    for(int wIndex = 0; wIndex < width; wIndex += 1)
+    for(int wIndex = 0; wIndex < bounds.width; wIndex += 1)
     {
       Square square = mineField[hIndex][wIndex];
 
@@ -19,11 +19,11 @@ bool mine_field_cleared(Field mineField, const int height, const int width)
   return true;
 }
 
-bool mine_field_exposed(Field mineField, const int height, const int width)
+bool mine_field_exposed(Field mineField, const Bounds bounds)
 {
-  for(int hIndex = 0; hIndex < height; hIndex += 1)
+  for(int hIndex = 0; hIndex < bounds.height; hIndex += 1)
   {
-    for(int wIndex = 0; wIndex < width; wIndex += 1)
+    for(int wIndex = 0; wIndex < bounds.width; wIndex += 1)
     {
       Square square = mineField[hIndex][wIndex];
 
@@ -33,12 +33,12 @@ bool mine_field_exposed(Field mineField, const int height, const int width)
   return false;
 }
 
-bool unlock_field_square(Field mineField, const int height, const int width, const Point point)
+bool unlock_field_square(Field mineField, const Bounds bounds, const Point point)
 {
-  if(!point_inside_bounds(point, height, width)) return false;
+  if(!point_inside_bounds(point, bounds)) return false;
 
 
-  Square square = mineField[point.height][point.width];
+  const Square square = mineField[point.height][point.width];
 
   if(square.flagged) return false;
 
@@ -53,12 +53,12 @@ bool unlock_field_square(Field mineField, const int height, const int width, con
 	{
 		for(int wIndex = (point.width - 1); wIndex <= (point.width + 1); wIndex += 1)
 		{
-      Point currPoint = {hIndex, wIndex};
+      const Point currPoint = {hIndex, wIndex};
 
-			if(!point_inside_bounds(currPoint, height, width)) continue;
+			if(!point_inside_bounds(currPoint, bounds)) continue;
 
 
-      Square currSquare = mineField[hIndex][wIndex];
+      const Square currSquare = mineField[hIndex][wIndex];
 
 
 			if(currSquare.flagged) continue;
@@ -66,7 +66,7 @@ bool unlock_field_square(Field mineField, const int height, const int width, con
       if(currSquare.visable) continue;
 
 
-			if(!unlock_field_square(mineField, height, width, currPoint))
+			if(!unlock_field_square(mineField, bounds, currPoint))
       {
         // The program should never have to go here!
 
@@ -97,16 +97,16 @@ Field create_field_matrix(const int height, const int width)
   return mineField;
 }
 
-bool generate_mine_field(Field mineField, const int height, const int width, const int mines)
+bool generate_mine_field(Field mineField, const Bounds bounds, const int mines)
 {
-  if(!activate_field_mines(mineField, height, width, mines)) return false;
+  if(!activate_field_mines(mineField, bounds, mines)) return false;
 
-  if(!mark_adjacent_mines(mineField, height, width)) return false;
+  if(!mark_adjacent_mines(mineField, bounds)) return false;
 
   return true;
 }
 
-bool activate_field_mines(Field mineField, const int height, const int width, const int mines)
+bool activate_field_mines(Field mineField, const Bounds bounds, const int mines)
 {
   mineField[4][4].mine = true;
 
@@ -115,16 +115,16 @@ bool activate_field_mines(Field mineField, const int height, const int width, co
   return true;
 }
 
-bool mark_adjacent_mines(Field mineField, const int height, const int width)
+bool mark_adjacent_mines(Field mineField, const Bounds bounds)
 {
-  for(int hIndex = 0; hIndex < height; hIndex = hIndex + 1)
+  for(int hIndex = 0; hIndex < bounds.height; hIndex = hIndex + 1)
 	{
-		for(int wIndex = 0; wIndex < width; wIndex = wIndex + 1)
+		for(int wIndex = 0; wIndex < bounds.width; wIndex = wIndex + 1)
 		{
 			if(mineField[hIndex][wIndex].mine) continue;
 
-			Point point = {hIndex, wIndex};
-			int adjacent = adjacent_field_mines(mineField, height, width, point);
+			const Point point = {hIndex, wIndex};
+			const int adjacent = adjacent_field_mines(mineField, bounds, point);
 
 			mineField[hIndex][wIndex].adjacent = adjacent;
 		}
@@ -132,7 +132,7 @@ bool mark_adjacent_mines(Field mineField, const int height, const int width)
   return true;
 }
 
-int adjacent_field_mines(Field mineField, const int height, const int width, const Point point)
+int adjacent_field_mines(Field mineField, const Bounds bounds, const Point point)
 {
 	int adjacent = 0;
 
@@ -140,9 +140,9 @@ int adjacent_field_mines(Field mineField, const int height, const int width, con
 	{
 		for(int wIndex = (point.width - 1); wIndex <= (point.width + 1); wIndex += 1)
 		{
-      Point point = {hIndex, wIndex};
+      const Point point = {hIndex, wIndex};
 
-			if(!point_inside_bounds(point, height, width)) continue;
+			if(!point_inside_bounds(point, bounds)) continue;
 
 			if(mineField[hIndex][wIndex].mine) adjacent += 1;
 		}
@@ -150,10 +150,10 @@ int adjacent_field_mines(Field mineField, const int height, const int width, con
 	return adjacent;
 }
 
-bool point_inside_bounds(const Point point, const int height, const int width)
+bool point_inside_bounds(const Point point, const Bounds bounds)
 {
-  bool hInside = (point.height >= 0 && point.height < height);
-  bool wInside = (point.width >= 0 && point.width < width);
+  const bool hInside = (point.height >= 0 && point.height < bounds.height);
+  const bool wInside = (point.width >= 0 && point.width < bounds.width);
 
 	return (hInside && wInside);
 }
