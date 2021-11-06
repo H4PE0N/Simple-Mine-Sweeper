@@ -16,6 +16,17 @@ int main(int argAmount, char* arguments[])
     return false;
   }
 
+  Window* window = NULL;
+  Renderer* renderer = NULL;
+  Surface* surface = NULL;
+
+  if(!setup_display_screen(&window, &renderer, &surface, SCREEN_HEIGHT, SCREEN_WIDTH, SCREEN_TITLE))
+  {
+    printf("Could not setup_display_screen!\n");
+
+    return false;
+  }
+
   if(mine_sweeper_game(mineField, height, width, mines))
   {
     printf("You have won the game!\n");
@@ -26,6 +37,7 @@ int main(int argAmount, char* arguments[])
   }
 
   free_mine_field(mineField, height);
+  free_display_screen(window, renderer, surface);
 
   return false;
 }

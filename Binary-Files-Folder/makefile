@@ -37,7 +37,20 @@ OBJECT_FILES := $(INTERFACE_OBJECT_FILES) $(ENGINE_OBJECT_FILES)
 
 COMPILE_COMPILOR := gcc
 COMPILE_FLAGS := -Wall -Werror
-EXECUTE_FLAGS := -lm
+
+
+SDL_LIB_FLAGS := -lSDL2main -lSDL2 -lSDL2_image
+SDL_DIR_FLAGS := -ISDL2/include -LSDL2/lib
+
+
+# This is the compile flags needed for Windows:
+WIN_SDL_FLAGS := $(SDL_DIR_FLAGS) -lmingw32 $(SDL_LIB_FLAGS)
+
+# This is the compile flags needed for MacOS:
+MAC_SDL_FLAGS := `sdl2-config --libs --cflags` $(SDL_LIB_FLAGS)
+
+
+EXECUTE_FLAGS := $(WIN_SDL_FLAGS) -lm
 
 
 .PRECIOUS: $(OBJECT_FILES)
