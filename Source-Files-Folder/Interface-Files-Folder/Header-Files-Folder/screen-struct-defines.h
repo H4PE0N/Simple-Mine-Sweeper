@@ -16,6 +16,11 @@ typedef SDL_Color Color;
 
 typedef SDL_Event Event;
 
+typedef enum Input
+{
+  INPUT_NONE, INPUT_QUIT, INPUT_UNLOCK, INPUT_FLAG
+} Input;
+
 typedef struct Screen
 {
   Window* window;

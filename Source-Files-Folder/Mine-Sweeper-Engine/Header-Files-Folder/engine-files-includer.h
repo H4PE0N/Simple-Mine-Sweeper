@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
-#include <string.h>
+#include <math.h>
 
 #include "engine-struct-defines.h"
 #include "mine-field-handler.h"

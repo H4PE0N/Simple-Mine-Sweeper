@@ -12,5 +12,6 @@
 #include "screen-struct-defines.h"
 #include "screen-files-defines.h"
 #include "screen-help-functions.h"
+#include "screen-input-parser.h"
 
 #endif

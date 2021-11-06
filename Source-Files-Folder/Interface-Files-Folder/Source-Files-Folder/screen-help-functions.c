@@ -153,10 +153,10 @@ bool screen_field_position(Rect* position, const Bounds sBounds, const Bounds fB
   const int squareHeight = (sBounds.height / fBounds.height);
   const int squareWidth = (sBounds.width / fBounds.width);
 
-  const int screenHeight = (squareHeight * point.height);
-  const int screenWidth = (squareWidth * point.width);
+  const int height = (squareHeight * point.height);
+  const int width = (squareWidth * point.width);
 
-  *position = (Rect) {screenWidth, screenHeight, squareWidth, squareHeight};
+  *position = (Rect) {width, height, squareWidth, squareHeight};
 
   return true;
 }
