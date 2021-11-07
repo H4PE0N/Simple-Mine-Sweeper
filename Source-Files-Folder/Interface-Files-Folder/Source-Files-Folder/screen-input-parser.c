@@ -43,13 +43,25 @@ Input input_screen_point(Point* point, Screen screen, Field mineField, const Boa
   return inputEvent;
 }
 
+// Instead of Event, use only Event.motion
 Point parse_mouse_point(const Event event, Screen screen, const Board board)
 {
-  const double squareHeight = (screen.height / board.height);
-  const double squareWidth = (screen.width / board.width);
+  const int squareHeight = (screen.height / board.height);
+  const int squareWidth = (screen.width / board.width);
 
-  int width = floor( (double) event.motion.x / squareWidth);
-  int height = floor( (double) event.motion.y / squareHeight);
+	const int squareLength = (squareHeight > squareWidth) ? squareWidth : squareHeight;
+
+  const int fieldHeight = (squareLength * board.height);
+	const int fieldWidth = (squareLength * board.width);
+
+	const int heightBlank = (screen.height - fieldHeight) / 2;
+	const int widthBlank = (screen.width - fieldWidth) / 2;
+
+  const int relativeWidth = (event.motion.x - widthBlank);
+  const int relativeHeight = (event.motion.y - heightBlank);
+
+  int width = floor( (double) relativeWidth / (double) squareLength);
+  int height = floor( (double) relativeHeight / (double) squareLength);
 
   return (Point) {height, width};
 }

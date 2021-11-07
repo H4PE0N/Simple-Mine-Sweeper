@@ -150,13 +150,24 @@ bool screen_field_position(Rect* position, Screen screen, const Board board, con
 {
   if(!point_inside_board(point, board)) return false;
 
-  const int squareHeight = (screen.height / board.height);
+	const int squareHeight = (screen.height / board.height);
   const int squareWidth = (screen.width / board.width);
 
-  const int height = (squareHeight * point.height);
-  const int width = (squareWidth * point.width);
+	const int squareLength = (squareHeight > squareWidth) ? squareWidth : squareHeight;
 
-  *position = (Rect) {width, height, squareWidth, squareHeight};
+	const int fieldHeight = (squareLength * board.height);
+	const int fieldWidth = (squareLength * board.width);
+
+	const int heightBlank = (screen.height - fieldHeight) / 2;
+	const int widthBlank = (screen.width - fieldWidth) / 2;
+
+	const int relativeHeight = (point.height * squareLength);
+	const int relativeWidth = (point.width * squareLength);
+
+	const int height = (heightBlank + relativeHeight);
+  const int width = (widthBlank + relativeWidth);
+
+  *position = (Rect) {width, height, squareLength, squareLength};
 
   return true;
 }
