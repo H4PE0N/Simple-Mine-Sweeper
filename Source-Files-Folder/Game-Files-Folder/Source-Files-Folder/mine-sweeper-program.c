@@ -1,30 +1,30 @@
 
 #include "../Header-Files-Folder/game-files-includer.h"
 
+#define BEGINNER_BOARD (Board) {9, 9, 10};
+#define INTERMEDIATE_BOARD (Board) {16, 16, 40};
+#define EXPERT_BOARD (Board) {16, 30, 99};
+
 int main(int argAmount, char* arguments[])
 {
   srand(time(NULL));
 
-  const Bounds sBounds = {800, 800};
-  const char title[] = "Test Title\n";
+  const Board board = BEGINNER_BOARD;
 
-  const Bounds fBounds = {10, 10};
-  const int mines = 10;
+  Field field = create_field_matrix(board.height, board.width);
 
-  Field mineField = create_field_matrix(fBounds.height, fBounds.width);
-
-  if(!generate_mine_field(mineField, fBounds, mines))
+  if(!generate_mine_field(field, board))
   {
     printf("Could not generate field!\n");
 
-    free_mine_field(mineField, fBounds.height);
+    free_mine_field(field, board.height);
 
     return false;
   }
 
-  Screen screen;
+  Screen screen = {NULL, NULL, NULL, 720, 720};
 
-  if(!setup_display_screen(&screen, sBounds, title))
+  if(!setup_display_screen(&screen, "Mine Sweeper\0"))
   {
     printf("Could not setup_display_screen!\n");
 
@@ -33,9 +33,9 @@ int main(int argAmount, char* arguments[])
 
   bool result = false;
 
-  if(mine_sweeper_game(&result, screen, sBounds, mineField, fBounds))
+  if(mine_sweeper_game(&result, screen, field, board))
   {
-    if(!render_mine_field(screen.renderer, sBounds, mineField, fBounds))
+    if(!render_mine_field(screen, field, board))
     {
       printf("Could not render_mine_field!\n");
 
@@ -64,29 +64,29 @@ int main(int argAmount, char* arguments[])
     printf("The game was quitted!\n");
   }
 
-  free_mine_field(mineField, fBounds.height);
+  free_mine_field(field, board.height);
 
   free_display_screen(screen);
 
   return false;
 }
 
-bool game_still_running(bool* result, Field mineField, const Bounds fBounds)
+bool game_still_running(bool* result, Field field, const Board board)
 {
-  if(mine_field_cleared(mineField, fBounds))
+  if(mine_field_cleared(field, board))
   {
     *result = true;
 
-    flag_field_mines(mineField, fBounds);
+    flag_field_mines(field, board);
 
     return false;
   }
 
-  else if(mine_field_exposed(mineField, fBounds))
+  else if(mine_field_exposed(field, board))
   {
     *result = false;
 
-    unlock_field_mines(mineField, fBounds);
+    unlock_field_mines(field, board);
 
     return false;
   }
@@ -94,11 +94,11 @@ bool game_still_running(bool* result, Field mineField, const Bounds fBounds)
   return true;
 }
 
-bool mine_sweeper_game(bool* result, Screen screen, const Bounds sBounds, Field mineField, const Bounds fBounds)
+bool mine_sweeper_game(bool* result, Screen screen, Field field, const Board board)
 {
-  while(game_still_running(result, mineField, fBounds))
+  while(game_still_running(result, field, board))
   {
-    if(!render_mine_field(screen.renderer, sBounds, mineField, fBounds))
+    if(!render_mine_field(screen, field, board))
     {
       printf("Could not render_mine_field!\n");
 
@@ -109,7 +109,7 @@ bool mine_sweeper_game(bool* result, Screen screen, const Bounds sBounds, Field 
 
     Point point = {-1, -1};
 
-    Input inputEvent = input_screen_point(&point, screen, sBounds, mineField, fBounds);
+    Input inputEvent = input_screen_point(&point, screen, field, board);
 
     if(inputEvent == INPUT_QUIT)
     {
@@ -119,14 +119,14 @@ bool mine_sweeper_game(bool* result, Screen screen, const Bounds sBounds, Field 
     }
     else if(inputEvent == INPUT_UNLOCK)
     {
-      if(!unlock_field_square(mineField, fBounds, point))
+      if(!unlock_field_square(field, board, point))
       {
         printf("Could not unlock_field_square!\n");
       }
     }
     else if(inputEvent == INPUT_FLAG)
     {
-      if(!flag_field_square(mineField, fBounds, point))
+      if(!flag_field_square(field, board, point))
       {
         printf("Could not flag_field_square!\n");
       }

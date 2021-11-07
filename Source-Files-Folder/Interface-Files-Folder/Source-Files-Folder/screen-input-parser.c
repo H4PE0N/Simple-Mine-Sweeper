@@ -1,7 +1,7 @@
 
 #include "../Header-Files-Folder/interface-files-includer.h"
 
-Input input_screen_point(Point* point, Screen screen, const Bounds sBounds, Field mineField, const Bounds fBounds)
+Input input_screen_point(Point* point, Screen screen, Field mineField, const Board board)
 {
   Point inputPoint = {-1, -1};
 
@@ -9,7 +9,7 @@ Input input_screen_point(Point* point, Screen screen, const Bounds sBounds, Fiel
 
   Event event;
 
-  while(!point_inside_bounds(inputPoint, fBounds))
+  while(!point_inside_board(inputPoint, board))
   {
     if(!SDL_PollEvent(&event)) continue;
 
@@ -23,13 +23,13 @@ Input input_screen_point(Point* point, Screen screen, const Bounds sBounds, Fiel
     {
       if(event.button.button == SDL_BUTTON_LEFT)
       {
-        inputPoint = parse_mouse_point(event, sBounds, fBounds);
+        inputPoint = parse_mouse_point(event, screen, board);
 
         inputEvent = INPUT_UNLOCK;
       }
       else if(event.button.button == SDL_BUTTON_RIGHT)
       {
-        inputPoint = parse_mouse_point(event, sBounds, fBounds);
+        inputPoint = parse_mouse_point(event, screen, board);
 
         inputEvent = INPUT_FLAG;
 
@@ -43,10 +43,10 @@ Input input_screen_point(Point* point, Screen screen, const Bounds sBounds, Fiel
   return inputEvent;
 }
 
-Point parse_mouse_point(const Event event, const Bounds sBounds, const Bounds fBounds)
+Point parse_mouse_point(const Event event, Screen screen, const Board board)
 {
-  const double squareHeight = (sBounds.height / fBounds.height);
-  const double squareWidth = (sBounds.width / fBounds.width);
+  const double squareHeight = (screen.height / board.height);
+  const double squareWidth = (screen.width / board.width);
 
   int width = floor( (double) event.motion.x / squareWidth);
   int height = floor( (double) event.motion.y / squareHeight);

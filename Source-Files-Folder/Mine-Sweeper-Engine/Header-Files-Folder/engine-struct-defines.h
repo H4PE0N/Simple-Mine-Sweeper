@@ -16,11 +16,12 @@ typedef struct Point
   int width;
 } Point;
 
-typedef struct Bounds
+typedef struct Board
 {
   int height;
   int width;
-} Bounds;
+  int mines;
+} Board;
 
 typedef Square** Field;
 

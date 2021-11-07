@@ -1,7 +1,7 @@
 
 #include "../Header-Files-Folder/interface-files-includer.h"
 
-bool setup_display_screen(Screen* screen, const Bounds sBounds, const char title[])
+bool setup_display_screen(Screen* screen, const char title[])
 {
 	if(SDL_Init(SDL_INIT_VIDEO) != 0)
 	{
@@ -15,7 +15,7 @@ bool setup_display_screen(Screen* screen, const Bounds sBounds, const char title
 		return false;
 	}
 
-	if(!create_screen_window(&screen->window, sBounds.height, sBounds.width, title))
+	if(!create_screen_window(&screen->window, screen->height, screen->width, title))
 	{
 		SDL_Quit();
 
@@ -84,23 +84,23 @@ void free_display_screen(Screen screen)
 	SDL_Quit();
 }
 
-bool render_mine_field(Renderer* renderer, const Bounds sBounds, Field mineField, const Bounds fBounds)
+bool render_mine_field(Screen screen, Field field, const Board board)
 {
-  for(int hIndex = 0; hIndex < fBounds.height; hIndex += 1)
+  for(int hIndex = 0; hIndex < board.height; hIndex += 1)
   {
-    for(int wIndex = 0; wIndex < fBounds.width; wIndex += 1)
+    for(int wIndex = 0; wIndex < board.width; wIndex += 1)
     {
-      const Square square = mineField[hIndex][wIndex];
+      const Square square = field[hIndex][wIndex];
       const Point point = {hIndex, wIndex};
 
-      if(!render_field_square(renderer, sBounds, fBounds, point, square))
+      if(!render_field_square(screen, board, point, square))
       {
         printf("Could not render_field_square!\n");
 
         return false;
       }
 
-      if(!render_field_symbol(renderer, sBounds, fBounds, point, square))
+      if(!render_field_symbol(screen, board, point, square))
       {
         printf("Could not render_field_symbol!\n");
 
@@ -109,12 +109,12 @@ bool render_mine_field(Renderer* renderer, const Bounds sBounds, Field mineField
     }
   }
 
-  SDL_RenderPresent(renderer);
+  SDL_RenderPresent(screen.renderer);
 
   return true;
 }
 
-bool render_field_square(Renderer* renderer, const Bounds sBounds, const Bounds fBounds, const Point point, const Square square)
+bool render_field_square(Screen screen, const Board board, const Point point, const Square square)
 {
   Surface* image = NULL;
 
@@ -127,14 +127,14 @@ bool render_field_square(Renderer* renderer, const Bounds sBounds, const Bounds 
 
   Rect position;
 
-  if(!screen_field_position(&position, sBounds, fBounds, point))
+  if(!screen_field_position(&position, screen, board, point))
   {
     SDL_FreeSurface(image);
 
     return false;
   }
 
-  if(!render_surface_texture(renderer, image, position))
+  if(!render_surface_texture(screen.renderer, image, position))
   {
     SDL_FreeSurface(image);
 
@@ -146,12 +146,12 @@ bool render_field_square(Renderer* renderer, const Bounds sBounds, const Bounds 
   return true;
 }
 
-bool screen_field_position(Rect* position, const Bounds sBounds, const Bounds fBounds, const Point point)
+bool screen_field_position(Rect* position, Screen screen, const Board board, const Point point)
 {
-  if(!point_inside_bounds(point, fBounds)) return false;
+  if(!point_inside_board(point, board)) return false;
 
-  const int squareHeight = (sBounds.height / fBounds.height);
-  const int squareWidth = (sBounds.width / fBounds.width);
+  const int squareHeight = (screen.height / board.height);
+  const int squareWidth = (screen.width / board.width);
 
   const int height = (squareHeight * point.height);
   const int width = (squareWidth * point.width);
@@ -161,7 +161,7 @@ bool screen_field_position(Rect* position, const Bounds sBounds, const Bounds fB
   return true;
 }
 
-bool render_field_symbol(Renderer* renderer, const Bounds sBounds, const Bounds fBounds, const Point point, const Square square)
+bool render_field_symbol(Screen screen, const Board board, const Point point, const Square square)
 {
   Surface* image = NULL;
 
@@ -181,14 +181,14 @@ bool render_field_symbol(Renderer* renderer, const Bounds sBounds, const Bounds 
 
   Rect position;
 
-  if(!screen_field_position(&position, sBounds, fBounds, point))
+  if(!screen_field_position(&position, screen, board, point))
   {
     SDL_FreeSurface(image);
 
     return false;
   }
 
-  if(!render_surface_texture(renderer, image, position))
+  if(!render_surface_texture(screen.renderer, image, position))
   {
     SDL_FreeSurface(image);
 
