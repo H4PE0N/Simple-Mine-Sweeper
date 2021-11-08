@@ -26,8 +26,8 @@ typedef struct Screen
   Window* window;
   Surface* surface;
   Renderer* renderer;
-  int height;
   int width;
+  int height;
 } Screen;
 
 #endif

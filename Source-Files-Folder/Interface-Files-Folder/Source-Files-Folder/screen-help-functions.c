@@ -68,7 +68,7 @@ bool create_window_surface(Surface** surface, Window* window)
 
 bool create_screen_window(Window** window, const int height, const int width, const char title[])
 {
-  *window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, height, width, 0);
+  *window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width, height, 0);
 
 	return (*window != NULL);
 }

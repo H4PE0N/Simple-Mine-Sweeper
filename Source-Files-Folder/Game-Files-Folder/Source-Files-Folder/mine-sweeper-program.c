@@ -9,7 +9,7 @@ int main(int argAmount, char* arguments[])
 {
   srand(time(NULL));
 
-  const Board board = BEGINNER_BOARD;
+  const Board board = INTERMEDIATE_BOARD;
 
   Field field = create_field_matrix(board.height, board.width);
 
@@ -22,7 +22,7 @@ int main(int argAmount, char* arguments[])
     return false;
   }
 
-  Screen screen = {NULL, NULL, NULL, 720, 720};
+  Screen screen = {NULL, NULL, NULL, 1280, 960};
 
   if(!setup_display_screen(&screen, "Mine Sweeper\0"))
   {
